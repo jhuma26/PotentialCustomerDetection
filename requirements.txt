@@ -3,6 +3,6 @@ scikit-learn
 pandas
 numpy
 matplotlib
-gunicorn
 dill
 catboost
+sagemaker
