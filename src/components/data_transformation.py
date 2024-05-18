@@ -101,6 +101,11 @@ class DataTransformation:
             '''
             logging.info("Obtaining preprocessing object")
             preprocessing_obj=self.get_data_transformer_object(train_df)
+            target_column_name='V86'
+            cat_cols = ['V1','V4','V5','V6','V44']
+            numeric_cols = [col for col in train_df.columns if col not in cat_cols and col != target_column_name]
+            for i in numeric_cols:
+                train_df[i] = train_df[i].astype(float)
             logging.info(f"Removal of correlated columns starts")
             correlated_df = train_df.drop(['V1','V4','V5','V6','V44'],axis=1)
 
@@ -110,7 +115,7 @@ class DataTransformation:
             test_df = test_df.drop(correlated_columns,axis=1)
             logging.info(f"Removal of correlated columns ends")
 
-            target_column_name='V86'
+            
             input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df=train_df[target_column_name]
             
