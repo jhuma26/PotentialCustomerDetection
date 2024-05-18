@@ -23,7 +23,7 @@ def predict_datapoint():
         return render_template('home.html')
     else:
         req_data = json.loads(request.data.decode('utf-8'))
-        req_data = req_data.get('data') # send req now this will work
+        req_data = req_data.get('data')
         data=CustomData(
             V1=req_data.get('V1'),
             V2=req_data.get('V2'),
@@ -126,34 +126,4 @@ def predict_datapoint():
         #return jsonify({"results":results})
         return render_template('home.html',results=results[0])
 if __name__=="__main__":
-    #app.run(host="0.0.0.0")
     app.run(host="0.0.0.0",debug=True, port=5000)
-
-
-
-
-
-# @app.route('/predict_api',methods=['POST'])
-# def predict_api():
-#     data=request.json['data']
-#     # print(data)
-#     # print(np.array(list(data.values())).reshape(1,-1))
-#     # new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
-#     # output=regmodel.predict(new_data)
-#     # print(output[0])
-#     # return jsonify(output[0])
-#     new_data = list(map(float, data[].split()))
-#     output=rf_model.predict(new_data)
-#     print(output[0])
-#     # print(f"Original Data \n : {data}")
-#     # data = [data]
-#     # print(f"Transform Data \n : {data}")
-#     # data_df = pd.DataFrame(data)
-#     # print(data_df.dtypes)
-#     # output=rf_model.predict(data)
-#     # print(output[0])
-    
-
-#     return jsonify(output[0])
-# if __name__=="__main__":
-#     app.run(debug=True)

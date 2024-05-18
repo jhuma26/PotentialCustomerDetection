@@ -56,10 +56,6 @@ if __name__=="__main__":
      train_data,test_data=obj.initiate_data_ingestion()
 
      data_transformation=DataTransformation()
-    #  preprocessing_obj,train_df,test_df = data_transformation.get_data_transformer_object(train_data,test_data)
-    #  print("preprocessing_obj from main",preprocessing_obj)
-    #  print("train_df from main",train_df.columns)
-    #  print("test_df from main",test_df.columns)
      train_arr,test_arr,_=data_transformation.initiate_data_transformation(train_data,test_data)
 
      modeltrainer=ModelTrainer()
