@@ -106,7 +106,8 @@ class ModelTrainer:
 
             predicted=best_model.predict(X_test)
 
-            score = fbeta_score(y_test, predicted,beta=2)
+            score = fbeta_score(y_test, predicted,beta=2,average='micro')
+            logging.info(f"Best model score {score}")
             return score
             
         except Exception as e:

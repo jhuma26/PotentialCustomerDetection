@@ -10,6 +10,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder,StandardScaler
+from sklearn.feature_selection import SelectKBest, mutual_info_classif
 
 from src.exception import CustomException
 from src.logger import logging
@@ -31,14 +32,17 @@ class DataTransformation:
         
         '''
         try:
-
+            target_column = 'V86'
+            all_columns = train_df.columns
             categorical_columns = ['V1','V4','V5','V6','V44']
-            numerical_columns = train_df.columns[:-1].to_list()
-            numerical_columns = [col for col in numerical_columns if col not in categorical_columns]
+            #numerical_columns = train_df.columns[:-1].to_list()
+            #numerical_columns = [col for col in numerical_columns if col not in categorical_columns]
+            numerical_columns = [col for col in all_columns if col not in categorical_columns and col != target_column]
 
             logging.info(f"Removal of correlated columns from preprocessing object starts")
 
-            correlated_columns = list(self.correlated_columns(train_df,0.8))
+            #correlated_columns = list(self.correlated_columns(train_df,0.8))
+            correlated_columns = self.correlated_columns(train_df.drop(columns=[target_column]), threshold=0.8)
             numerical_columns = [col for col in numerical_columns if col not in correlated_columns]
             logging.info(f"Removal of correlated columns preprocessing object ends")
 
@@ -62,14 +66,19 @@ class DataTransformation:
             
             num_pipeline= Pipeline(
                 steps=[
-                ("scaler",StandardScaler())
+                ("imputer", SimpleImputer(strategy="mean")),
+                ("scaler",StandardScaler()),
+                #("selector", SelectKBest(score_func=mutual_info_classif, k='all'))
                 ]
             )
 
             cat_pipeline=Pipeline(
                 steps=[
-                ("one_hot_encoder",OneHotEncoder()),
-                ("scaler",StandardScaler(with_mean=False))
+                ("imputer", SimpleImputer(strategy="most_frequent")),
+                ("one_hot_encoder",OneHotEncoder(min_frequency =  500, 
+                                                 handle_unknown = 'ignore',
+                                                 drop = 'first')),
+                #('replace_inf', SimpleImputer(strategy='constant', fill_value=-999))             
                 ]
 
             )
@@ -117,25 +126,26 @@ class DataTransformation:
             correlated_df = train_df.drop(['V1','V4','V5','V6','V44'],axis=1)
 
             correlated_columns = self.correlated_columns(correlated_df,0.8)
+            print("correlated_columns= ",correlated_columns)
             train_df = train_df.drop(correlated_columns,axis=1)
             test_df = test_df.drop(correlated_columns,axis=1)
             logging.info(f"Removal of correlated columns ends")
 
             target_column_name='V86'
-            print("train_df",train_df.columns)
+            #print("train_df",train_df.columns)
 
             input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df=train_df[target_column_name]
-            #print("input_feature_train_df",input_feature_train_df.columns)
-
+            #print("input_feature_train_df columns = ",input_feature_train_df.columns)
+            
             input_feature_test_df=test_df.drop(columns=[target_column_name],axis=1)
             target_feature_test_df=test_df[target_column_name]
+            #print("input_feature_test_df",input_feature_test_df.isnull().sum())
 
             logging.info(
                 f"Applying preprocessing object on training dataframe and testing dataframe."
             )
-
-            #print("input_feature_train_df",input_feature_train_df.columns)
+            
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
 

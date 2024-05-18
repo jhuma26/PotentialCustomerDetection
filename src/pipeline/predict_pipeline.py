@@ -17,6 +17,15 @@ class PredictPipeline:
             model=load_object(file_path=model_path)
             preprocessor=load_object(file_path=preprocessor_path)
             print("After Loading")
+
+            # Check if all required columns are present in the input data
+            # required_columns = preprocessor.transformers_[0][2] + preprocessor.transformers_[1][2]
+            # print("Required columns :",required_columns)
+            # print("Feature columns:",features.columns) 
+            # missing_columns = set(required_columns) - set(features.columns)
+            # if missing_columns:
+            #     raise ValueError(f"Missing columns in dataset: {missing_columns}")
+            
             data_scaled=preprocessor.transform(features)
             preds=model.predict(data_scaled)
             return preds

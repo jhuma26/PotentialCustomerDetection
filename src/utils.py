@@ -42,9 +42,9 @@ def evaluate_models(X_train, y_train,X_test,y_test,models):#,param):
 
             y_test_pred = model.predict(X_test)
 
-            train_model_score = fbeta_score(y_train, y_train_pred,beta=2)
+            train_model_score = fbeta_score(y_train, y_train_pred,beta=2,average='micro')
 
-            test_model_score = fbeta_score(y_test, y_test_pred,beta=2)
+            test_model_score = fbeta_score(y_test, y_test_pred,beta=2,average='micro')
 
             report[list(models.keys())[i]] = test_model_score
 
