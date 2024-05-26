@@ -12,6 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from src.pipeline.predict_pipeline import CustomData,PredictPipeline
 
 application=Flask(__name__)
+app=application
 ## Load the model
 model=pickle.load(open('artifacts/model.pkl','rb'))
 @app.route('/')
